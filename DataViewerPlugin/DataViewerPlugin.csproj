@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DataViewerPlugin</RootNamespace>
     <AssemblyName>DataViewerPlugin</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -37,23 +38,51 @@
     <Reference Include="MikuMikuPlugin">
       <HintPath>X:\mmd\tools\MikuMikuMoving\System\MikuMikuPlugin.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoneListViewModel.cs" />
+    <Compile Include="BoneViewModel.cs" />
     <Compile Include="DataViewerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DataViewerControl.Designer.cs">
       <DependentUpon>DataViewerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataViewerPlugin.cs" />
+    <Compile Include="DataViewerPluginMain.cs" />
+    <Compile Include="DataViewerView.xaml.cs">
+      <DependentUpon>DataViewerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataViewerViewModel.cs" />
+    <Compile Include="ModelBase.cs" />
+    <Compile Include="ModelListViewModel.cs" />
+    <Compile Include="ModelViewModel.cs" />
+    <Compile Include="ObjectViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SceneViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DataViewerControl.resx">
+      <DependentUpon>DataViewerControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DataViewerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
