@@ -6,26 +6,26 @@ using System.Text;
 
 namespace DataViewerPlugin
 {
-    public class ModelListViewModel : ObjectViewModel
+    public class MotionLayerViewModel : ObjectViewModel
     {
-        private readonly Scene scene;
+        private MotionLayer layer;
 
-        public ModelListViewModel(MikuMikuPlugin.Scene scene)
+        public MotionLayerViewModel(MotionLayer layer)
         {
-            this.scene = scene;
+            this.layer = layer;
         }
 
         public override string Label
         {
-            get { return "Models"; }
+            get { return "Layer: " + layer.Name; }
         }
 
         public override IEnumerable<ObjectViewModel> Children
         {
             get
             {
-                return from model in scene.Models
-                       select new ModelViewModel(model);
+                return from frame in layer.Frames
+                       select new MotionFrameViewModel(frame);
             }
         }
     }

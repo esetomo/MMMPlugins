@@ -17,16 +17,31 @@ namespace DataViewerPlugin
 
         public override string Label
         {
-            get { return model.Name; }
+            get { return "Model: " + model.Name; }
         }
 
         public override IEnumerable<ObjectViewModel> Children
         {
             get
             {
-                return new ObjectViewModel[]{
-                    new BoneListViewModel(model),
-                };
+                var bones =
+                    from bone in model.Bones
+                        where bone.ParentBoneID < 0
+                        select new BoneViewModel(model, bone);
+
+                var morphs =
+                    from morph in model.Morphs
+                    select new MorphViewModel(morph);
+
+                var materials =
+                    from material in model.Materials
+                    select new MaterialViewModel(material);
+
+                var propertyFrames =
+                    from propertyFrame in model.PropertyFrames
+                    select new PropertyFrameViewModel(propertyFrame);
+
+                return ObjectViewModel.Concat(bones, morphs, materials, propertyFrames);
             }
         }
     }

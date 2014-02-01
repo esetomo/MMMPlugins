@@ -10,18 +10,9 @@
         <local:DataViewerViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
-        <HierarchicalDataTemplate DataType="{x:Type local:BoneViewModel}" ItemsSource="{Binding Children}">
-            <StackPanel>
-                <TextBlock Text="{Binding Label}" />
-                <TextBlock Text="{Binding Move}" />
-                <TextBlock Text="{Binding Rotation}" />
-            </StackPanel>
-        </HierarchicalDataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type local:ObjectViewModel}" ItemsSource="{Binding Children}">
             <TextBlock Text="{Binding Label}" />
         </HierarchicalDataTemplate>
     </UserControl.Resources>
-    <Border Margin="4" BorderBrush="DarkGray" BorderThickness="1">
-        <TreeView ItemsSource="{Binding Root}" />
-    </Border>
+    <TreeView ItemsSource="{Binding Root}" Background="#e3e8ee"/>
 </UserControl>

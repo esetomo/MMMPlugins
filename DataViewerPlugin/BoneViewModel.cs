@@ -19,26 +19,33 @@ namespace DataViewerPlugin
 
         public override string Label
         {
-            get { return bone.Name; }
+            get {
+                return string.Format("Bone: {0} move:({1},{2},{3}) rot:({4},{5},{6},{7})",
+                    bone.Name,
+                    bone.CurrentLocalMotion.Move.X,
+                    bone.CurrentLocalMotion.Move.Y,
+                    bone.CurrentLocalMotion.Move.Z,
+                    bone.CurrentLocalMotion.Rotation.X,
+                    bone.CurrentLocalMotion.Rotation.Y,
+                    bone.CurrentLocalMotion.Rotation.Z,
+                    bone.CurrentLocalMotion.Rotation.W);
+            }
         }
 
         public override IEnumerable<ObjectViewModel> Children
         {
             get {
-                return from child in model.Bones
+                var children =
+                    from child in model.Bones
                        where bone.BoneID == child.ParentBoneID
                        select new BoneViewModel(model, child);
+                
+                var layers =
+                    from layer in bone.Layers
+                        select new MotionLayerViewModel(layer);
+
+                return ObjectViewModel.Concat(children, layers);
             }
-        }
-
-        public DxMath.Vector3 Move
-        {
-            get { return bone.CurrentLocalMotion.Move; }
-        }
-
-        public DxMath.Quaternion Rotation
-        {
-            get { return bone.CurrentLocalMotion.Rotation; }
         }
     }
 }

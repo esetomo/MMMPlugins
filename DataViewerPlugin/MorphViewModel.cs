@@ -6,27 +6,26 @@ using System.Text;
 
 namespace DataViewerPlugin
 {
-    public class SceneViewModel : ObjectViewModel
+    public class MorphViewModel : ObjectViewModel
     {
-        private readonly Scene scene;
+        private Morph morph;
 
-        public SceneViewModel(Scene scene)
+        public MorphViewModel(Morph morph)
         {
-            this.scene = scene;
+            this.morph = morph;
         }
 
         public override string Label
         {
-            get { return "Scene"; }
+            get { return "Morph:" + morph.Name; }
         }
 
         public override IEnumerable<ObjectViewModel> Children
         {
             get
             {
-                return new ObjectViewModel[] {
-                    new ModelListViewModel(scene),
-                };
+                return from frame in morph.Frames
+                       select new MorphFrameViewModel(frame);
             }
         }
     }

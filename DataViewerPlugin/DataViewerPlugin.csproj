@@ -53,7 +53,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoneListViewModel.cs" />
     <Compile Include="BoneViewModel.cs" />
     <Compile Include="DataViewerControl.cs">
       <SubType>UserControl</SubType>
@@ -66,12 +65,16 @@
       <DependentUpon>DataViewerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataViewerViewModel.cs" />
+    <Compile Include="MaterialViewModel.cs" />
     <Compile Include="ModelBase.cs" />
-    <Compile Include="ModelListViewModel.cs" />
     <Compile Include="ModelViewModel.cs" />
+    <Compile Include="MorphFrameViewModel.cs" />
+    <Compile Include="MorphViewModel.cs" />
+    <Compile Include="MotionFrameViewModel.cs" />
+    <Compile Include="MotionLayerViewModel.cs" />
     <Compile Include="ObjectViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SceneViewModel.cs" />
+    <Compile Include="PropertyFrameViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DataViewerControl.resx">

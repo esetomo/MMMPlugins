@@ -21,7 +21,11 @@ namespace DataViewerPlugin
         {
             get
             {
-                return new ObjectViewModel[]{new SceneViewModel(scene)};
+                if(scene == null)
+                    return new ObjectViewModel[]{};
+
+                return from model in scene.Models
+                    select new ModelViewModel(model);
             }
         }
     }
