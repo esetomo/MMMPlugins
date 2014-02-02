@@ -10,16 +10,19 @@
         <local:DataViewerViewModel/>
     </UserControl.DataContext>
     <DockPanel Background="#e3e8ee">
-        <DockPanel DockPanel.Dock="Top">
-            <TextBlock Text="MarkerPosition:" DockPanel.Dock="Left"/>
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+        <WrapPanel DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="MarkerPosition:"/>
                 <TextBlock Text="{Binding MarkerPosition}" TextAlignment="Right" Width="40"/>
                 <TextBlock Text="/"/>
                 <TextBlock Text="{Binding LastFrame}" TextAlignment="Right" Width="40"/>
             </StackPanel>
-            <Slider Value="{Binding MarkerPosition}" Maximum="{Binding LastFrame}" />
-        </DockPanel>
-        <TreeView ItemsSource="{Binding Root}" Background="#e3e8ee">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="SelectedBone:"/>
+                <TextBlock Text="{Binding SelectedBone.Label}"/>
+            </StackPanel>
+        </WrapPanel>
+        <TreeView x:Name="treeView1" ItemsSource="{Binding Root}" Background="#e3e8ee">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:ObjectViewModel}" ItemsSource="{Binding Children}">
                     <TextBlock Text="{Binding Label}" />

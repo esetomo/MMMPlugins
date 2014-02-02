@@ -17,7 +17,7 @@ namespace DataViewerPlugin
         {
             InitializeComponent();
 
-            this.Dock = DockStyle.Fill;
+            this.Dock = DockStyle.Fill;           
         }
 
         public void SetScene(Scene scene)
@@ -26,6 +26,9 @@ namespace DataViewerPlugin
             if (vm == null)
                 return;
 
+            this.Visible = scene != null;
+
+            vm.Dispatcher = dataViewerView1.Dispatcher;
             vm.SetScene(scene);
         }
     }

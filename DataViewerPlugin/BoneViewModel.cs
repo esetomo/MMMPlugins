@@ -42,5 +42,13 @@ namespace DataViewerPlugin
                     bone.CurrentLocalMotion.Rotation.W);
             }
         }
+
+        internal override BoneViewModel FindBoneViewModel(string boneName)
+        {
+            if (bone.DisplayName == boneName)
+                return this;
+
+            return base.FindBoneViewModel(boneName);
+        }
     }
 }

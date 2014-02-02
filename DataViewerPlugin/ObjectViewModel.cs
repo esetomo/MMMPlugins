@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MikuMikuPlugin;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -41,6 +42,18 @@ namespace DataViewerPlugin
                 result = result.Concat(list);
 
             return result;
+        }
+
+        internal virtual BoneViewModel FindBoneViewModel(string boneName)
+        {
+            foreach (var child in children)
+            {
+                var bone = child.FindBoneViewModel(boneName);
+                if (bone != null)
+                    return bone;
+            }
+
+            return null;
         }
     }
 }

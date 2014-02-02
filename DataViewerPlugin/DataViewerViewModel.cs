@@ -2,23 +2,133 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace DataViewerPlugin
 {
     public class DataViewerViewModel : ModelBase
     {
         private Scene scene;
+        private Thread thread;
+
         private readonly ObservableCollection<ObjectViewModel> rootObjects = new ObservableCollection<ObjectViewModel>();
+        public ObservableCollection<ObjectViewModel> Root
+        {
+            get { return rootObjects; }
+        }
+
+        private long markerPosition;
+        public long MarkerPosition
+        {
+            get { return markerPosition; }
+        }
+
+        private long lastFrame;
+        public long LastFrame
+        {
+            get { return lastFrame; }
+        }
+
+        private BoneViewModel selectedBone;
+        public BoneViewModel SelectedBone
+        {
+            get { return selectedBone; }
+        }
 
         internal void SetScene(Scene scene)
         {
-            this.scene = scene;
-
-            rootObjects.Clear();
-            if (scene != null)
+            lock (this)
             {
+                this.scene = scene;
+
+                if (scene != null && thread == null)
+                {
+                    thread = new Thread(Run);
+                    thread.Start();
+                }
+            }
+
+            ReloadData();
+        }
+
+        public Dispatcher Dispatcher { get; set; }
+
+        private void Run()
+        {
+            try
+            {
+                while (true)
+                {
+                    lock (this)
+                    {
+                        if (scene == null)
+                        {
+                            thread = null;
+                            return;
+                        }
+
+                        if (IsDataChanged() && Dispatcher != null)
+                        {
+                            Dispatcher.BeginInvoke(new Action(ReloadData));
+                        }
+                    }
+
+                    Thread.Sleep(200);
+                }
+            }
+            catch (Exception e)
+            {
+                if (Dispatcher != null)
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        throw e;
+                    }));
+                }
+                else
+                {
+                    using (var writer = new StreamWriter(@"DataViewPlugin.log"))
+                        writer.WriteLine(e);
+                }
+            }
+        }
+
+        private bool IsDataChanged()
+        {
+            if (scene.MarkerPosition != markerPosition)
+                return true;
+
+            if (scene.Models.Count != rootObjects.Count)
+                return true;
+
+            if (CalcLastFrame() != lastFrame)
+                return true;
+
+            if (CalcSelectedBone() != selectedBone)
+                return true;
+
+            return false;
+        }
+
+        private void ReloadData()
+        {
+            if (scene == null)
+                return;
+
+            if (markerPosition != scene.MarkerPosition)
+            {
+                markerPosition = scene.MarkerPosition;
+                RaisePropertyChanged(() => MarkerPosition);
+            }
+
+            if (scene.Models.Count != rootObjects.Count)
+            {
+                rootObjects.Clear();
                 var models =
                     from model in scene.Models
                     select new ModelViewModel(model);
@@ -26,54 +136,60 @@ namespace DataViewerPlugin
                     rootObjects.Add(model);
             }
 
-            RaisePropertyChanged(() => Root);
-            RaisePropertyChanged(() => MarkerPosition);
-            RaisePropertyChanged(() => LastFrame);
+            var l = CalcLastFrame();
+            if(l != lastFrame)
+            {
+                lastFrame = l;
+                RaisePropertyChanged(() => LastFrame);
+            }
+
+            var b = CalcSelectedBone();
+            if(b != selectedBone)
+            {
+                selectedBone = b;
+                RaisePropertyChanged(() => SelectedBone);
+            }
+
+            foreach (var item in rootObjects)
+                item.Invalidate();
         }
 
-        public ObservableCollection<ObjectViewModel> Root
+        private long CalcLastFrame()
         {
-            get
-            {
-                return rootObjects;
-            }
+            return
+                (from model in scene.Models
+                 from bone in model.Bones
+                 from layer in bone.Layers
+                 from frame in layer.Frames
+                 select frame.FrameNumber).Union(new long[]{-1}).Max();
         }
 
-        public long MarkerPosition
+        private BoneViewModel CalcSelectedBone()
         {
-            get
-            {
-                if (scene == null)
-                    return -1;
+            var model = scene.ActiveModel;
+            if(model == null)
+                return null;
 
-                return scene.MarkerPosition;
-            }
-            set
-            {
-                if (scene == null)
-                    return;
+            var bone =
+                (from b in model.Bones
+                 where b.SelectedLayers.Take(1).Count() > 0
+                     select b).FirstOrDefault();
+            if (bone == null)
+                return null;
 
-                scene.MarkerPosition = value;
-
-                RaisePropertyChanged(() => MarkerPosition);
-                foreach (var item in rootObjects)
-                    item.Invalidate();
-            }
+            return FindBoneViewModel(bone.DisplayName);
         }
 
-        public long LastFrame
+        private BoneViewModel FindBoneViewModel(string boneName)
         {
-            get
+            foreach(var item in rootObjects)
             {
-                if (scene == null)
-                    return -1;
-
-                return (from model in scene.Models
-                        from bone in model.Bones
-                        from layer in bone.Layers
-                        from frame in layer.Frames
-                        select frame.FrameNumber).Max();
+                var bone = item.FindBoneViewModel(boneName);
+                if (bone != null)
+                    return bone;
             }
+
+            return null;
         }
     }
 }

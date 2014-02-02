@@ -6,7 +6,7 @@ namespace DataViewerPlugin
 {
     // namespaceと同じクラス名のクラスがあるとデザイナ生成コードでnamespaceを指している個所が
     // クラスを参照してしまい、エラーとなる事があるので、namespaceとは異なるクラス名とした。
-    public class DataViewerPluginMain : ICommandPlugin, IHaveUserControl
+    public class DataViewerPluginMain : IResidentPlugin, IHaveUserControl
     {
         private DataViewerControl dataViewerControl;
 
@@ -37,21 +37,11 @@ namespace DataViewerPlugin
             get { return new Guid("A183C93E-5532-4C1A-B6A3-E6D960EA7392"); }
         }
 
-        public void Dispose()
-        {
-        }
-
         public UserControl CreateControl()
         {
             dataViewerControl = new DataViewerControl();
-            dataViewerControl.SetScene(scene);
+            dataViewerControl.SetScene(null);
             return dataViewerControl;
-        }
-
-        public void Run(CommandArgs e)
-        {
-            dataViewerControl.SetScene(scene);
-            e.Cancel = true;
         }
 
         public string EnglishText
@@ -72,6 +62,29 @@ namespace DataViewerPlugin
         public string Text
         {
             get { return EnglishText; }
+        }
+
+        public void Initialize()
+        {
+        }
+
+        public void Enabled()
+        {
+            dataViewerControl.SetScene(Scene);
+        }
+
+        public void Disabled()
+        {
+            dataViewerControl.SetScene(null);
+        }
+
+        public void Update(float Frame, float ElapsedTime)
+        {
+        }
+
+        public void Dispose()
+        {
+            dataViewerControl.SetScene(null);
         }
     }
 }
