@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -9,12 +10,27 @@ namespace DataViewerPlugin
     {
         public abstract string Label { get; }
 
-        public virtual IEnumerable<ObjectViewModel> Children
+        private readonly ObservableCollection<ObjectViewModel> children = new ObservableCollection<ObjectViewModel>();
+
+        public IEnumerable<ObjectViewModel> Children
         {
             get
             {
-                return new ObjectViewModel[] { };
+                return children;
             }
+            protected set
+            {
+                children.Clear();
+                foreach(var item in value)
+                    children.Add(item);
+            }
+        }
+
+        internal void Invalidate()
+        {
+            RaisePropertyChanged(() => Label);
+            foreach (var child in children)
+                child.Invalidate();
         }
 
         internal static IEnumerable<ObjectViewModel> Concat(params IEnumerable<ObjectViewModel>[] lists)

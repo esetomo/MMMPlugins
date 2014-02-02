@@ -15,6 +15,17 @@ namespace DataViewerPlugin
         {
             this.model = model;
             this.bone = bone;
+
+            var children =
+                from child in model.Bones
+                where bone.BoneID == child.ParentBoneID
+                select new BoneViewModel(model, child);
+
+            var layers =
+                from layer in bone.Layers
+                select new MotionLayerViewModel(layer);
+
+            this.Children = ObjectViewModel.Concat(children, layers);
         }
 
         public override string Label
@@ -29,22 +40,6 @@ namespace DataViewerPlugin
                     bone.CurrentLocalMotion.Rotation.Y,
                     bone.CurrentLocalMotion.Rotation.Z,
                     bone.CurrentLocalMotion.Rotation.W);
-            }
-        }
-
-        public override IEnumerable<ObjectViewModel> Children
-        {
-            get {
-                var children =
-                    from child in model.Bones
-                       where bone.BoneID == child.ParentBoneID
-                       select new BoneViewModel(model, child);
-                
-                var layers =
-                    from layer in bone.Layers
-                        select new MotionLayerViewModel(layer);
-
-                return ObjectViewModel.Concat(children, layers);
             }
         }
     }

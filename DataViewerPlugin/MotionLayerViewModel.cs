@@ -13,20 +13,15 @@ namespace DataViewerPlugin
         public MotionLayerViewModel(MotionLayer layer)
         {
             this.layer = layer;
+
+            Children = 
+                from frame in layer.Frames
+                   select new MotionFrameViewModel(frame);
         }
 
         public override string Label
         {
             get { return "Layer: " + layer.Name; }
-        }
-
-        public override IEnumerable<ObjectViewModel> Children
-        {
-            get
-            {
-                return from frame in layer.Frames
-                       select new MotionFrameViewModel(frame);
-            }
         }
     }
 }

@@ -9,14 +9,25 @@
     <UserControl.DataContext>
         <local:DataViewerViewModel/>
     </UserControl.DataContext>
-    <TreeView ItemsSource="{Binding Root}" Background="#e3e8ee">
-        <TreeView.Resources>
-            <HierarchicalDataTemplate DataType="{x:Type local:ObjectViewModel}" ItemsSource="{Binding Children}">
-                <TextBlock Text="{Binding Label}" />
-            </HierarchicalDataTemplate>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#ffd098" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#ffd098" />
-        </TreeView.Resources>
-    </TreeView>
+    <DockPanel Background="#e3e8ee">
+        <DockPanel DockPanel.Dock="Top">
+            <TextBlock Text="MarkerPosition:" DockPanel.Dock="Left"/>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <TextBlock Text="{Binding MarkerPosition}" TextAlignment="Right" Width="40"/>
+                <TextBlock Text="/"/>
+                <TextBlock Text="{Binding LastFrame}" TextAlignment="Right" Width="40"/>
+            </StackPanel>
+            <Slider Value="{Binding MarkerPosition}" Maximum="{Binding LastFrame}" />
+        </DockPanel>
+        <TreeView ItemsSource="{Binding Root}" Background="#e3e8ee">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type local:ObjectViewModel}" ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Label}" />
+                </HierarchicalDataTemplate>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#ffd098" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#ffd098" />
+            </TreeView.Resources>
+        </TreeView>
+    </DockPanel>
 </UserControl>

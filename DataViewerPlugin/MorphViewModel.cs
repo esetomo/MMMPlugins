@@ -13,20 +13,15 @@ namespace DataViewerPlugin
         public MorphViewModel(Morph morph)
         {
             this.morph = morph;
+
+            Children =
+                from frame in morph.Frames
+                   select new MorphFrameViewModel(frame);
         }
 
         public override string Label
         {
             get { return "Morph:" + morph.Name; }
-        }
-
-        public override IEnumerable<ObjectViewModel> Children
-        {
-            get
-            {
-                return from frame in morph.Frames
-                       select new MorphFrameViewModel(frame);
-            }
         }
     }
 }
